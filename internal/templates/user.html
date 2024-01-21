@@ -12,10 +12,7 @@
   </head>
   <body class="bg-dark text-white">
 
-    <h2 class="container-sm mt-4 mb-3">Пользователь: {{.Name}}</h2>
-    <!-- Скрываем со страницы -->
-    <div id="user" class="o-hide">{{.ID}}</div>
-
+    <h2 class="container-sm mt-4 mb-3">Пользователь: {{.Surname}} {{.Name}}</h2>
 
     <!-- Изменение ФИО пользователя -->
     <p class="container-sm mb-3 mt-2">
@@ -28,7 +25,9 @@
       <div class="card card-body">
         <form class="container-sm mb-3 mt-2" action="/edit-user" method="post">
           <div class="mb-3">
-            <input type="text" name="chatName" class="form-control" value="{{.Name}}">
+            <input type="text" name="userSurname" class="form-control" value="{{.Surname}}">
+            <input type="text" name="userName" class="form-control" value="{{.Name}}">
+            <input type="text" name="userPatronymic" class="form-control" value="{{.Patronymic}}">
             <input type="text" class="o-hide" name="userID" value="{{.ID}}">
           </div>
           <button type="submit" class="btn btn-outline-success">Изменить</button>
@@ -38,7 +37,7 @@
     
     <!-- Назад -->
     <div class="container-sm">
-      <a class="btn btn-outline-danger" href="/start" role="button">Назад</a>
+      <a class="btn btn-outline-danger" href="/users-list" role="button">Назад</a>
     </div>
 
   <!-- Bootstrap в связке с Popper -->

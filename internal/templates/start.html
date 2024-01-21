@@ -12,32 +12,114 @@
   </head>
   <body class="bg-dark text-white">
 
-    <h3 class="container-sm mt-4">Введите ФИО нового пользователя</h3>
+    <h3 class="container-sm mt-4">Добавление нового пользователя</h3>
 
     <!-- Создание пользователя -->
     <form class="container-sm mb-3" action="/create-user" method="post">
+      <h5 class="container-sm mt-4">Введите Фамилию</h5>
+      <div class="mb-3">
+        <input type="text" name="userSurname" class="form-control">
+      </div>
+      <h5 class="container-sm mt-4">Введите Имя</h5>
       <div class="mb-3">
         <input type="text" name="userName" class="form-control">
+      </div>
+      <h5 class="container-sm mt-4">Введите Отчество</h5>
+      <div class="mb-3">
+        <input type="text" name="userPatronymic" class="form-control">
       </div>
       <button type="submit" class="btn btn-outline-success">Добавить</button>
     </form>
 
-    <h3 class="container-sm mb-4">Список добавленных пользователей</h3>
 
-    {{range $key, $value := .}}
+    <h3 class="container-sm mb-4">Список всех добавленных пользователей</h3>
+
+    <!-- Изменение ФИО пользователя -->
+    <p class="container-sm mb-3 mt-2">
+      <a class="btn btn-outline-primary" data-bs-toggle="collapse" href="#collapseExample_1" role="button">
+        Фильтр по возрасту
+      </a>
+      <a class="btn btn-outline-success" data-bs-toggle="collapse" href="#collapseExample_2" role="button">
+        Фильтр по полу
+      </a>
+      <a class="btn btn-outline-warning" data-bs-toggle="collapse" href="#collapseExample_3" role="button">
+        Фильтр по национальности
+      </a>
+      <a class="btn btn-outline-light" href="/users-list" role="button">
+        Сбросить фильтр
+      </a>
+    </p>
+
+    <!-- Скрывающиеся элементы для collapseExample_1-->
+    <div class="collapse container-sm mb-3 mt-2" id="collapseExample_1">
+      <div class="card card-body">
+        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+          <div class="mb-3">
+            
+            <input type="text" name="userAgeMin" class="form-control" aria-describedby="ageMin">
+            <div id="ageMin" class="form-text">Укажите минимальный возраст</div>
+            
+            <input type="text" name="userAgeMax" class="form-control" aria-describedby="ageMax">
+            <div id="ageMax" class="form-text">Укажите максимальный возраст</div>
+
+          </div>
+          <button type="submit" class="btn btn-outline-success">Применить фильтр</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Скрывающиеся элементы для collapseExample_2-->
+    <div class="collapse container-sm mb-3 mt-2" id="collapseExample_2">
+      <div class="card card-body">
+        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+          <button type="submit" class="btn btn-outline-success">Только мужчины</button>
+        </form>
+        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+          <button type="submit" class="btn btn-outline-warning">Только женщины</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Скрывающиеся элементы для collapseExample_2-->
+    <div class="collapse container-sm mb-3 mt-2" id="collapseExample_3">
+      <div class="card card-body">
+        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+          <button type="submit" class="btn btn-outline-success">Русские</button>
+        </form>
+        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+          <button type="submit" class="btn btn-outline-info">Французы</button>
+        </form>
+        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+          <button type="submit" class="btn btn-outline-primary">Немцы</button>
+        </form>
+        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+          <button type="submit" class="btn btn-outline-warning">Итальянцы</button>
+        </form>
+      </div>
+    </div>
+
+  
+    {{range .}}
     <div class="container-sm">
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <a href="/go-user/{{$value.ID}}" class="alert-link font-weight-bold">{{$value.Name}}</a>
-        <a href="/delete-user/{{$value.ID}}" class="btn-close" aria-label="Close"></a>
+        <a href="/go-user/{{.ID}}" class="alert-link font-weight-bold">{{.Surname}} {{.Name}} {{.Patronymic}} - Возраст: {{.Age}} Пол: {{.Gender}} Национальность: {{.Nation}}</a>
+        <a href="/delete-user/{{.ID}}" class="btn-close" aria-label="Close"></a>
       </div>
     </div>
     {{else}}
     <p class="container-sm">Добавьте нового пользователя!</p>
     {{end}}
-
   
   <!-- Bootstrap в связке с Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
   </body>
 </html>
+
+<!-- Скрываем ID со страницы -->
+<style>
+  .o-hide {
+    display: none;
+    transition: all ease 0.8s;
+  }
+</style>

@@ -32,12 +32,12 @@ type Config struct {
 	}
 
 	DB struct {
-		Address  string `envconfig:"DB_ADDRESS" default:"localhost"`
-		Name     string `envconfig:"DB_NAME" default:"mydb"`
-		User     string `envconfig:"DB_USER" default:"root"`
-		Password string `envconfig:"DB_PASSWORD" default:"mydbpass"`
-		Port     int    `envconfig:"DB_PORT" default:"5432"`
-		MaxConn  int    `envconfig:"DB_MAX_CONN" default:"15"`
+		Address  string `envconfig:"DB_ADDRESS"`
+		Name     string `envconfig:"DB_NAME"`
+		User     string `envconfig:"DB_USER"`
+		Password string `envconfig:"DB_PASSWORD"`
+		Port     int    `envconfig:"DB_PORT"`
+		MaxConn  int    `envconfig:"DB_MAX_CONN"`
 	}
 }
 
