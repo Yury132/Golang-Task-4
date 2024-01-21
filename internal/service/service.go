@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/Yury132/Golang-Task-4/internal/models"
 	"github.com/pkg/errors"
@@ -28,7 +30,10 @@ type Service interface {
 }
 
 type UserAPI interface {
+	// Получаем данные о возрасте
 	GetAge(name string) ([]byte, error)
+	// Получаем данные о возрасте
+	GetGender(name string) ([]byte, error)
 }
 
 type Storage interface {
@@ -43,7 +48,7 @@ type Storage interface {
 	// Проверка на существование пользователя
 	CheckUser(ctx context.Context, name string, surname string, patronymic string) (bool, error)
 	// Создание нового пользователя
-	CreateUser(ctx context.Context, name string, surname string, patronymic string) error
+	CreateUser(ctx context.Context, name string, surname string, patronymic string, age int, gender string, nation string) error
 	// Удаление пользователя
 	DeleteUser(ctx context.Context, id int) error
 	// Получение конкретного пользователя по ID
@@ -100,7 +105,52 @@ func (s *service) GetUsersListNation(ctx context.Context, userNation string) ([]
 
 // Добавление нового пользователя, если точно такой же уже не существует в БД
 func (s *service) HandleUser(ctx context.Context, name string, surname string, patronymic string) error {
-	// Проверяем
+
+	// Используем api для получения возраста
+	dataBytesAge, err := s.userAPI.GetAge(name)
+	if err != nil {
+		return errors.Wrap(err, "failed to get age from api")
+	}
+
+	// Переводим байты в структуру
+	var infoAge models.AgeApi
+	if err = json.Unmarshal(dataBytesAge, &infoAge); err != nil {
+		return errors.Wrap(err, "failed to unmarshal age from api")
+	}
+	s.logger.Log().Msg(fmt.Sprintf("Для %v api вернул возраст %v", name, infoAge.Age))
+
+	//
+	//
+	//
+	//
+
+	// Используем api для получения пола
+	dataBytesGender, err := s.userAPI.GetGender(name)
+	if err != nil {
+		return errors.Wrap(err, "failed to get gender from api")
+	}
+
+	// Переводим байты в структуру
+	var infoGender models.GenderApi
+	if err = json.Unmarshal(dataBytesGender, &infoGender); err != nil {
+		return errors.Wrap(err, "failed to unmarshal gender from api")
+	}
+	s.logger.Log().Msg(fmt.Sprintf("Для %v api вернул пол %v", name, infoGender.Gender))
+
+	// Для БД формируем обозначение пол пользователя
+	var getGender string
+	if infoGender.Gender == "male" {
+		getGender = "м"
+	} else {
+		getGender = "ж"
+	}
+
+	//
+	//
+	//
+	//
+
+	// Проверяем----------------------------------------------------------------------
 	ok, err := s.checkUser(ctx, name, surname, patronymic)
 	if err != nil {
 		return errors.Wrap(err, "failed to check user")
@@ -110,7 +160,7 @@ func (s *service) HandleUser(ctx context.Context, name string, surname string, p
 		s.logger.Log().Msg("ФИО нового пользователя полностью совпадает с уже существующим")
 	} else {
 		// Создаем
-		if err = s.createUser(ctx, name, surname, patronymic); err != nil {
+		if err = s.createUser(ctx, name, surname, patronymic, infoAge.Age, getGender, "RU"); err != nil {
 			return errors.Wrap(err, "failed to create user")
 		}
 	}
@@ -129,8 +179,8 @@ func (s *service) checkUser(ctx context.Context, name string, surname string, pa
 }
 
 // Создание нового пользователя
-func (s *service) createUser(ctx context.Context, name string, surname string, patronymic string) error {
-	err := s.storage.CreateUser(ctx, name, surname, patronymic)
+func (s *service) createUser(ctx context.Context, name string, surname string, patronymic string, age int, gender string, nation string) error {
+	err := s.storage.CreateUser(ctx, name, surname, patronymic, age, gender, nation)
 	if err != nil {
 		return err
 	}

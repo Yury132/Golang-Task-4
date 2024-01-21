@@ -19,7 +19,7 @@ type Storage interface {
 	// Проверка на существование пользователя
 	CheckUser(ctx context.Context, name string, surname string, patronymic string) (bool, error)
 	// Создание нового пользователя
-	CreateUser(ctx context.Context, name string, surname string, patronymic string) error
+	CreateUser(ctx context.Context, name string, surname string, patronymic string, age int, gender string, nation string) error
 	// Удаление пользователя
 	DeleteUser(ctx context.Context, id int) error
 	// Получение конкретного пользователя по ID
@@ -169,9 +169,9 @@ func (s *storage) CheckUser(ctx context.Context, name string, surname string, pa
 }
 
 // Создание нового пользователя
-func (s *storage) CreateUser(ctx context.Context, name string, surname string, patronymic string) error {
+func (s *storage) CreateUser(ctx context.Context, name string, surname string, patronymic string, age int, gender string, nation string) error {
 	query := "INSERT INTO public.users (name, surname, patronymic, age, gender, nation) values ($1, $2, $3, $4, $5, $6)"
-	_, err := s.conn.Exec(ctx, query, name, surname, patronymic, 23, "м", "RU")
+	_, err := s.conn.Exec(ctx, query, name, surname, patronymic, age, gender, nation)
 	if err != nil {
 		return err
 	}
