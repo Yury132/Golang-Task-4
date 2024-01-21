@@ -12,12 +12,12 @@ func InitRoutes(h *handlers.Handler) *mux.Router {
 
 	// Все пользователи в БД
 	r.HandleFunc("/users-list", h.GetUsersList)
-	//
-	//r.HandleFunc("/users-list-age", h.GetUsersListAge)
-	//
-	//r.HandleFunc("/users-list-gender", h.GetUsersListGender)
-	//
-	//r.HandleFunc("/users-list-nation", h.GetUsersListNation)
+	// Получение определенных пользователей по возрасту
+	r.HandleFunc("/users-list-age", h.GetUsersListAge).Methods(http.MethodPost)
+	// Получение определенных пользователей по полу
+	r.HandleFunc("/users-list-gender/{gender:[0-9]+}", h.GetUsersListGender).Methods(http.MethodPost)
+	// Получение определенных пользователей по национальности
+	r.HandleFunc("/users-list-nation", h.GetUsersListNation).Methods(http.MethodPost)
 	// Удаление пользователя по ID
 	r.HandleFunc("/delete-user/{userId:[0-9]+}", h.DeleteUser).Methods(http.MethodGet)
 	// Добавление нового пользователя, если точно такой же уже не существует в БД

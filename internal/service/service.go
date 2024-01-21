@@ -11,6 +11,12 @@ import (
 type Service interface {
 	// Получение всех пользователей БД
 	GetUsersList(ctx context.Context) ([]models.User, error)
+	// Получение определенных пользователей по возрасту
+	GetUsersListAge(ctx context.Context, userAgeMin int, userAgeMax int) ([]models.User, error)
+	// Получение определенных пользователей по полу
+	GetUsersListGender(ctx context.Context, gender string) ([]models.User, error)
+	// Получение определенных пользователей по национальности
+	GetUsersListNation(ctx context.Context, userNation string) ([]models.User, error)
 	// Добавление нового пользователя, если точно такой же уже не существует в БД
 	HandleUser(ctx context.Context, name string, surname string, patronymic string) error
 	// Удаление пользователя
@@ -55,6 +61,36 @@ type service struct {
 // Все пользователи в БД
 func (s *service) GetUsersList(ctx context.Context) ([]models.User, error) {
 	users, err := s.storage.GetUsersList(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+// Получение определенных пользователей по возрасту
+func (s *service) GetUsersListAge(ctx context.Context, userAgeMin int, userAgeMax int) ([]models.User, error) {
+	users, err := s.storage.GetUsersListAge(ctx, userAgeMin, userAgeMax)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+// Получение определенных пользователей по полу
+func (s *service) GetUsersListGender(ctx context.Context, gender string) ([]models.User, error) {
+	users, err := s.storage.GetUsersListGender(ctx, gender)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+// Получение определенных пользователей по национальности
+func (s *service) GetUsersListNation(ctx context.Context, userNation string) ([]models.User, error) {
+	users, err := s.storage.GetUsersListNation(ctx, userNation)
 	if err != nil {
 		return nil, err
 	}

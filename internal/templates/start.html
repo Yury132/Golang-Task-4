@@ -53,14 +53,14 @@
     <!-- Скрывающиеся элементы для collapseExample_1-->
     <div class="collapse container-sm mb-3 mt-2" id="collapseExample_1">
       <div class="card card-body">
-        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+        <form class="container-sm mb-3 mt-2" action="/users-list-age" method="post">
           <div class="mb-3">
             
             <input type="text" name="userAgeMin" class="form-control" aria-describedby="ageMin">
-            <div id="ageMin" class="form-text">Укажите минимальный возраст</div>
+            <div id="ageMin" class="form-text">Укажите минимальный возраст, например, "18"</div>
             
             <input type="text" name="userAgeMax" class="form-control" aria-describedby="ageMax">
-            <div id="ageMax" class="form-text">Укажите максимальный возраст</div>
+            <div id="ageMax" class="form-text">Укажите максимальный возраст, например, "65"</div>
 
           </div>
           <button type="submit" class="btn btn-outline-success">Применить фильтр</button>
@@ -71,10 +71,10 @@
     <!-- Скрывающиеся элементы для collapseExample_2-->
     <div class="collapse container-sm mb-3 mt-2" id="collapseExample_2">
       <div class="card card-body">
-        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+        <form class="container-sm mb-3 mt-2" action="/users-list-gender/1" method="post">
           <button type="submit" class="btn btn-outline-success">Только мужчины</button>
         </form>
-        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
+        <form class="container-sm mb-3 mt-2" action="/users-list-gender/2" method="post">
           <button type="submit" class="btn btn-outline-warning">Только женщины</button>
         </form>
       </div>
@@ -83,17 +83,14 @@
     <!-- Скрывающиеся элементы для collapseExample_2-->
     <div class="collapse container-sm mb-3 mt-2" id="collapseExample_3">
       <div class="card card-body">
-        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
-          <button type="submit" class="btn btn-outline-success">Русские</button>
-        </form>
-        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
-          <button type="submit" class="btn btn-outline-info">Французы</button>
-        </form>
-        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
-          <button type="submit" class="btn btn-outline-primary">Немцы</button>
-        </form>
-        <form class="container-sm mb-3 mt-2" action="/users-list" method="post">
-          <button type="submit" class="btn btn-outline-warning">Итальянцы</button>
+        <form class="container-sm mb-3 mt-2" action="/users-list-nation" method="post">
+          <div class="mb-3">
+            
+            <input type="text" name="userNation" class="form-control" aria-describedby="nation">
+            <div id="nation" class="form-text">Укажите национальность, например: "RU","UA","KZ","BY","IL"</div>
+            
+          </div>
+          <button type="submit" class="btn btn-outline-success">Применить фильтр</button>
         </form>
       </div>
     </div>
@@ -102,8 +99,13 @@
     {{range .}}
     <div class="container-sm">
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <a href="/go-user/{{.ID}}" class="alert-link font-weight-bold">{{.Surname}} {{.Name}} {{.Patronymic}} - Возраст: {{.Age}} Пол: {{.Gender}} Национальность: {{.Nation}}</a>
-        <a href="/delete-user/{{.ID}}" class="btn-close" aria-label="Close"></a>
+        <p>
+          <a href="/go-user/{{.ID}}" class="alert-link font-weight-bold">{{.Surname}} {{.Name}} {{.Patronymic}}</a>
+          <a href="/delete-user/{{.ID}}" class="btn-close" aria-label="Close"></a>
+        </p>
+        <p>
+          Возраст: {{.Age}} Пол: {{.Gender}} Национальность: {{.Nation}}
+        </p>
       </div>
     </div>
     {{else}}
