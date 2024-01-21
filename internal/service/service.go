@@ -32,8 +32,10 @@ type Service interface {
 type UserAPI interface {
 	// Получаем данные о возрасте
 	GetAge(name string) ([]byte, error)
-	// Получаем данные о возрасте
+	// Получаем данные о поле
 	GetGender(name string) ([]byte, error)
+	// Получаем данные о национальности
+	GetNation(name string) ([]byte, error)
 }
 
 type Storage interface {
@@ -119,11 +121,6 @@ func (s *service) HandleUser(ctx context.Context, name string, surname string, p
 	}
 	s.logger.Log().Msg(fmt.Sprintf("Для %v api вернул возраст %v", name, infoAge.Age))
 
-	//
-	//
-	//
-	//
-
 	// Используем api для получения пола
 	dataBytesGender, err := s.userAPI.GetGender(name)
 	if err != nil {
@@ -145,12 +142,31 @@ func (s *service) HandleUser(ctx context.Context, name string, surname string, p
 		getGender = "ж"
 	}
 
-	//
-	//
-	//
-	//
+	// Используем api для получения национальности
+	dataBytesNation, err := s.userAPI.GetNation(name)
+	if err != nil {
+		return errors.Wrap(err, "failed to get nation from api")
+	}
 
-	// Проверяем----------------------------------------------------------------------
+	// Переводим байты в структуру
+	var infoNation models.NationApi
+	if err = json.Unmarshal(dataBytesNation, &infoNation); err != nil {
+		return errors.Wrap(err, "failed to unmarshal nation from api")
+	}
+	s.logger.Log().Msg(fmt.Sprintf("Для %v api вернул следующие коды стран: %v", name, infoNation.Country))
+
+	// Ищем наибольшую вероятность - какую национальность имеет пользователь
+	probability := 0.0
+	countryCode := "RU"
+	// Проходимся в цикле
+	for _, value := range infoNation.Country {
+		if value.Probability > probability {
+			probability = value.Probability
+			countryCode = value.Country_id
+		}
+	}
+
+	// Проверяем на полное совпадение по ФИО в БД
 	ok, err := s.checkUser(ctx, name, surname, patronymic)
 	if err != nil {
 		return errors.Wrap(err, "failed to check user")
@@ -160,7 +176,7 @@ func (s *service) HandleUser(ctx context.Context, name string, surname string, p
 		s.logger.Log().Msg("ФИО нового пользователя полностью совпадает с уже существующим")
 	} else {
 		// Создаем
-		if err = s.createUser(ctx, name, surname, patronymic, infoAge.Age, getGender, "RU"); err != nil {
+		if err = s.createUser(ctx, name, surname, patronymic, infoAge.Age, getGender, countryCode); err != nil { // infoAge.Age, getGender
 			return errors.Wrap(err, "failed to create user")
 		}
 	}

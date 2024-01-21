@@ -13,6 +13,8 @@ type UserAPI interface {
 	GetAge(name string) ([]byte, error)
 	// Получаем данные о возрасте
 	GetGender(name string) ([]byte, error)
+	// Получаем данные о национальности
+	GetNation(name string) ([]byte, error)
 }
 
 type api struct {
@@ -45,7 +47,7 @@ func (a *api) GetAge(name string) ([]byte, error) {
 	return contents, nil
 }
 
-// Получаем данные о возрасте
+// Получаем данные о поле
 func (a *api) GetGender(name string) ([]byte, error) {
 
 	// Обращаемся по адресу
@@ -54,6 +56,32 @@ func (a *api) GetGender(name string) ([]byte, error) {
 
 	if err != nil {
 		return nil, fmt.Errorf("failed getting user gender from api: %s", err.Error())
+	}
+
+	defer func() {
+		if err = response.Body.Close(); err != nil {
+			a.logger.Error().Err(err).Msg("failed to close body")
+		}
+	}()
+
+	// Возвращаем массив байтов
+	contents, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
+	}
+
+	return contents, nil
+}
+
+// Получаем данные о национальности
+func (a *api) GetNation(name string) ([]byte, error) {
+
+	// Обращаемся по адресу
+	const url = "https://api.nationalize.io/?name="
+	response, err := http.Get(url + name)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed getting user nation from api: %s", err.Error())
 	}
 
 	defer func() {

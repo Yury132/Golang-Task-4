@@ -22,5 +22,18 @@ type GenderApi struct {
 	Count       int     `json:"count"`
 	Name        string  `json:"name"`
 	Gender      string  `json:"gender"`
-	Probability float32 `json:"probability"`
+	Probability float64 `json:"probability"`
+}
+
+// Структура получаемой национальности от внешнего api
+type NationApi struct {
+	Count   int       `json:"count"`
+	Name    string    `json:"name"`
+	Country []Country `json:"country"`
+}
+
+// Вспомогательная структура - страна с вероятностью
+type Country struct {
+	Country_id  string  `json:"country_id"`
+	Probability float64 `json:"probability"`
 }
